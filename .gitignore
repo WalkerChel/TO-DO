@@ -5,6 +5,10 @@
 *.exe~
 *.so
 
+.env
+.database
+.DS_Store
+
 # Testing
 *.test
 *.tmp
