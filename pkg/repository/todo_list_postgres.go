@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -18,11 +19,23 @@ func NewTodoListPostgres(db *sqlx.DB) *TodoListPostgres {
 }
 
 func (r *TodoListPostgres) Create(userId int, list todo.TodoList) (int, error) {
+	// checkTitle := fmt.Sprintf(`SELECT tl.id FROM %s tl
+	// 							INNER JOIN %s ul ON ul.list_id = tl.id
+	// 							WHERE ul.user_id = $1 AND LOWER(tl.title) = TRIM(LOWER($2))`,
+	// 	todoListsTable, usersListsTable)
+
+	var id int
+
+	// err := r.db.Get(&id, checkTitle, userId, list.Title)
+
+	// if err == nil {
+	// 	return 0, fmt.Errorf("list with such title '%s' already exists", strings.ToLower(list.Title))
+	// }
+
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
 	}
-	var id int
 
 	createListQuery := fmt.Sprintf("INSERT INTO %s (title, description) VALUES ($1, $2) RETURNING ID", todoListsTable)
 
@@ -67,14 +80,45 @@ func (r *TodoListPostgres) GetById(userId, listId int) (todo.TodoList, error) {
 }
 
 func (r *TodoListPostgres) Delete(userId, listId int) error {
-	query := fmt.Sprintf("DELETE FROM %s tl USING %s ul WHERE tl.id=ul.list_id AND ul.user_id=$1 AND ul.list_id=$2", todoListsTable, usersListsTable)
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
 
-	_, err := r.db.Exec(query, userId, listId)
-	return err
+	deleteAllItemsQuery := fmt.Sprintf(`DELETE FROM %s ti 
+										USING %s li, %s ul 
+										WHERE ti.id = li.item_id AND li.list_id = ul.list_id AND ul.user_id = $1 AND li.list_id = $2`,
+		todoItemsTable, listsItemsTable, usersListsTable)
+
+	_, err = tx.Exec(deleteAllItemsQuery, userId, listId)
+
+	if err != nil {
+		// tx.Rollback()
+		return fmt.Errorf("1)%s; 2)%s", err, tx.Rollback())
+	}
+
+	deleteListQuery := fmt.Sprintf(`DELETE FROM %s tl 
+							USING %s ul 
+							WHERE tl.id=ul.list_id AND ul.user_id=$1 AND ul.list_id=$2`,
+		todoListsTable, usersListsTable)
+
+	res, err := tx.Exec(deleteListQuery, userId, listId)
+
+	if err != nil {
+		// tx.Rollback()
+		return fmt.Errorf("1)%s; 2)%s", err, tx.Rollback())
+	}
+
+	if rows, _ := res.RowsAffected(); rows == 0 {
+		return errors.New("no rows deleted")
+	}
+
+	return tx.Commit()
 }
 
 func (r *TodoListPostgres) Update(userId, listId int, input todo.UpdateListInput) error {
 	setValues := make([]string, 0)
+	// args = [title, description, listId, userId]
 	args := make([]interface{}, 0)
 	argId := 1
 
@@ -100,7 +144,11 @@ func (r *TodoListPostgres) Update(userId, listId int, input todo.UpdateListInput
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %s", args)
 
-	_, err := r.db.Exec(query, args...)
+	res, err := r.db.Exec(query, args...)
+
+	if rows, _ := res.RowsAffected(); rows == 0 {
+		return errors.New("incorrect list or item id for update statement")
+	}
 
 	return err
 }

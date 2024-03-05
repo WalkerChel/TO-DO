@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres_db: 
+      container_name: postgres_compose
+      restart: always
+      image: postgres:latest
+      volumes:
+        - ./.database/postgres/data:/var/lib/postgresql/data
+      environment:
+      - POSTGRES_PASSWORD=qwerty
+      ports: 
+        - 5432:5432
+
+  todo-app:
+    container_name: todo-app_compose
+    build: ./
+    command: ./todo-app 
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    depends_on:
+      - postgres_db
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+    restart: unless-stopped
+  

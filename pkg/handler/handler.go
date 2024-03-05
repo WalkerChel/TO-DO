@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/WalkerChel/TO-DO/pkg/service"
-	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"	
 )
 
 type Handler struct {
@@ -31,7 +31,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			lists.POST("/", h.createList)
 			lists.GET("/", h.getAllLists)
 			lists.GET("/:id", h.getListById)
-			lists.PUT("/:id", h.updateist)
+			lists.PUT("/:id", h.updateList)
 			lists.DELETE("/:id", h.deleteList)
 
 			items := lists.Group(":id/items")

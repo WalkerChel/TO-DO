@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	salt      = "jkgf6gf54ih3gf543df3"
-	signInKey = "uytjhg543v54cv38bh"
+	salt      = "mkijhgfde4r5678ijnbvfr"
+	signInKey = "2wsder56tghu89op"
 	tokenTTL  = 12 * time.Hour
 )
 
@@ -45,7 +45,7 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(12 * time.Hour).Unix(),
+			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		user.Id})
@@ -67,6 +67,7 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 		}
 		return []byte(signInKey), nil
 	})
+
 	if err != nil {
 		return 0, err
 	}

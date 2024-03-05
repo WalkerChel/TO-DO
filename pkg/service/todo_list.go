@@ -1,6 +1,8 @@
 package service
 
 import (
+	"strings"
+
 	todo "github.com/WalkerChel/TO-DO"
 	"github.com/WalkerChel/TO-DO/pkg/repository"
 )
@@ -16,7 +18,7 @@ func NewTodoListService(repo repository.TodoList) *TodoListService {
 }
 
 func (s *TodoListService) Create(userId int, list todo.TodoList) (int, error) {
-	return s.repo.Create(userId, list)
+	return s.repo.Create(userId, TrimTitle(list))
 }
 
 func (s *TodoListService) GetAll(userId int) ([]todo.TodoList, error) {
@@ -37,4 +39,10 @@ func (s *TodoListService) Update(userId, listId int, input todo.UpdateListInput)
 	}
 
 	return s.repo.Update(userId, listId, input)
+}
+
+func TrimTitle(list todo.TodoList) todo.TodoList {
+	 list.Title = strings.Trim(list.Title, " ")
+
+	return list
 }

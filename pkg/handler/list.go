@@ -33,7 +33,7 @@ func (h *Handler) createList(c *gin.Context) {
 }
 
 type getAllListsResponce struct {
-	Data []todo.TodoList `json:"data"`
+	Data []todo.TodoList `json:"lists"`
 }
 
 func (h *Handler) getAllLists(c *gin.Context) {
@@ -75,7 +75,7 @@ func (h *Handler) getListById(c *gin.Context) {
 	c.JSON(http.StatusOK, list)
 }
 
-func (h *Handler) updateist(c *gin.Context) {
+func (h *Handler) updateList(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
 		return
@@ -94,7 +94,7 @@ func (h *Handler) updateist(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.Update(userId, id, input); err != nil {
+	if err := h.services.TodoList.Update(userId, id, input); err != nil {
 		newErrorResponce(c, http.StatusInternalServerError, err.Error())
 		return
 	}
