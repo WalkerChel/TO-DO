@@ -25,7 +25,7 @@
 -X POST http://{host}:{port}/auth/sign-up — регистрация
 ```
 ```
--X GET http://{host}:{port}/auth/sign-in — аутентификация
+-X POST http://{host}:{port}/auth/sign-in — аутентификация
 ```
 ##### Операции над списками:
 ```
