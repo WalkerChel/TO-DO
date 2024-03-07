@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	todo "github.com/WalkerChel/TO-DO"
-	"github.com/WalkerChel/TO-DO/pkg/repository"
+	"github.com/WalkerChel/TO-DO/internal/entity"
+	"github.com/WalkerChel/TO-DO/internal/repo"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -18,14 +18,14 @@ const (
 )
 
 type AuthService struct {
-	repo repository.Authorization
+	repo repo.Authorization
 }
 
-func NewAuthService(repo repository.Authorization) *AuthService {
+func NewAuthService(repo repo.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (s *AuthService) CreateUser(user todo.User) (int, error) {
+func (s *AuthService) CreateUser(user entity.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }

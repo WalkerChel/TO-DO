@@ -1,4 +1,4 @@
-package repository
+package postgres
 
 //this postgres.go targets to open a POSTGRE SQL Data Base
 //it is the lowest level of app
@@ -13,18 +13,12 @@ import (
 )
 
 const (
-	userTable       = "users"
-	todoListsTable  = "todo_lists"
-	usersListsTable = "users_lists"
-	todoItemsTable  = "todo_items"
-	listsItemsTable = "lists_items"
-
 	defaultConnTimeout = time.Second
 )
 
 var connAttempts = 10
 
-type Config struct {
+type ConfigPG struct {
 	Host     string
 	Port     string
 	Username string
@@ -33,7 +27,7 @@ type Config struct {
 	SSLMode  string
 }
 
-func NewPostgresDB(cnf Config) (*sqlx.DB, error) {
+func NewPostgresDB(cnf ConfigPG) (*sqlx.DB, error) {
 	// db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 	// 	cnf.Host, cnf.Port, cnf.Username, cnf.DBName, cnf.Password, cnf.SSLMode))
 	// if err != nil {

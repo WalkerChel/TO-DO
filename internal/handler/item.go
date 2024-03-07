@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	todo "github.com/WalkerChel/TO-DO"
+	"github.com/WalkerChel/TO-DO/internal/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +20,7 @@ func (h *Handler) createItem(c *gin.Context) {
 		return
 	}
 
-	var input todo.TodoItem
+	var input entity.TodoItem
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponce(c, http.StatusBadRequest, err.Error())
@@ -39,7 +39,7 @@ func (h *Handler) createItem(c *gin.Context) {
 }
 
 type getAllItemsResponce struct {
-	Data []todo.TodoItem `json:"items"`
+	Data []entity.TodoItem `json:"items"`
 }
 
 func (h *Handler) getAllItems(c *gin.Context) {
@@ -112,7 +112,7 @@ func (h *Handler) updateItem(c *gin.Context) {
 		return
 	}
 
-	var input todo.UpdateItemInput
+	var input entity.UpdateItemInput
 
 	err = c.BindJSON(&input)
 	if err != nil {

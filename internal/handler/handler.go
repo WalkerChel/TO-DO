@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/WalkerChel/TO-DO/pkg/service"
-	"github.com/gin-gonic/gin"	
+	"github.com/WalkerChel/TO-DO/internal/service"
+	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {

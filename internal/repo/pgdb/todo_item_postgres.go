@@ -1,11 +1,11 @@
-package repository
+package pgdb
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 
-	todo "github.com/WalkerChel/TO-DO"
+	"github.com/WalkerChel/TO-DO/internal/entity"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -17,7 +17,7 @@ func NewTodoItemPostgres(db *sqlx.DB) *TodoItemPostgres {
 	return &TodoItemPostgres{db: db}
 }
 
-func (r *TodoItemPostgres) Create(listId int, item todo.TodoItem) (int, error) {
+func (r *TodoItemPostgres) Create(listId int, item entity.TodoItem) (int, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -45,8 +45,8 @@ func (r *TodoItemPostgres) Create(listId int, item todo.TodoItem) (int, error) {
 	return itemId, tx.Commit()
 }
 
-func (r *TodoItemPostgres) GetAll(userId, listId int) ([]todo.TodoItem, error) {
-	var items []todo.TodoItem
+func (r *TodoItemPostgres) GetAll(userId, listId int) ([]entity.TodoItem, error) {
+	var items []entity.TodoItem
 
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti 
 							INNER JOIN %s li ON li.item_id = ti.id 
@@ -61,8 +61,8 @@ func (r *TodoItemPostgres) GetAll(userId, listId int) ([]todo.TodoItem, error) {
 	return items, nil
 }
 
-func (r *TodoItemPostgres) GetById(userId, listId, itemId int) (todo.TodoItem, error) {
-	var item todo.TodoItem
+func (r *TodoItemPostgres) GetById(userId, listId, itemId int) (entity.TodoItem, error) {
+	var item entity.TodoItem
 
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done 
 							FROM %s ti 
@@ -106,7 +106,7 @@ func (r *TodoItemPostgres) Delete(userId, listId, itemId int) error {
 // 	return err
 // }
 
-func (r *TodoItemPostgres) Update(userId, listId, itemId int, input todo.UpdateItemInput) error {
+func (r *TodoItemPostgres) Update(userId, listId, itemId int, input entity.UpdateItemInput) error {
 	setValues := make([]string, 0)
 
 	args := make([]interface{}, 0)

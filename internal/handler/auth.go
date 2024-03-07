@@ -3,13 +3,13 @@ package handler
 import (
 	"net/http"
 
-	todo "github.com/WalkerChel/TO-DO"
+	"github.com/WalkerChel/TO-DO/internal/entity"
 	"github.com/gin-gonic/gin"
 )
 
 func (h *Handler) signUp(c *gin.Context) {
-	var input todo.User
-	
+	var input entity.User
+
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponce(c, http.StatusBadRequest, err.Error())
 
@@ -25,7 +25,7 @@ func (h *Handler) signUp(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
-		})
+	})
 }
 
 type signInInput struct {
