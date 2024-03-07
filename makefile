@@ -11,10 +11,10 @@ pstg_docker_down:
 	docker stop todo-db && docker rm todo-db
 
 migrations_up:
-	migrate -path ~/GOLANG/src/TO-DO//migrations -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' up
+	migrate -path ./migrations -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' up
 
 migrations_down:
-	migrate -path ~/GOLANG/src/TO-DO//migrations -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' down 
+	migrate -path ./migrations -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' down 
 
 migrations_force:
-	migrate -path ~/GOLANG/src/TO-DO//migrations -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' force 000001
+	migrate -path ./migrations -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' force 000001
