@@ -1,7 +1,7 @@
-#REST API для списков TO-DO 
+# REST API для списков TO-DO 
     
     
-###Схема базы данных
+### Схема базы данных
 ![REST API TODO DataBase Schema](docs/TODO.png)  
 
 ---
