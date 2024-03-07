@@ -1,3 +1,9 @@
+app-build:
+	docker compose build todo-app
+
+app-run:
+	docker compose up todo-app
+
 pstg_docker_up:
 	docker run --name=todo-db -e POSTGRES_PASSWORD=qwerty -p 5432:5432 -d postgres
 
